@@ -1,6 +1,7 @@
 import React, {useCallback, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
 import '@shopify/polaris/build/esm/styles.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import enTranslations from '@shopify/polaris/locales/en.json';
 //import {AppProvider, Avatar, ResourceList, TextStyle, Navigation,  Page, Card, Button} from '@shopify/polaris';
 import {AppProvider, ActionList, Avatar, Card, ContextualSaveBar, FormLayout, Frame, Layout, Loading, Modal, Navigation, Page, SkeletonBodyText, SkeletonDisplayText, SkeletonPage, TextContainer, TextField, Toast, TopBar} from '@shopify/polaris';
@@ -15,6 +16,7 @@ function Home() {
       const skipToContentRef = useRef(null);
     
       const [toastActive, setToastActive] = useState(false);
+      const [currentPageMarkup, setCurrentPageMarkup] = useState();
       const [isLoading, setIsLoading] = useState(false);
       const [isDirty, setIsDirty] = useState(false);
       const [searchActive, setSearchActive] = useState(false);
@@ -94,6 +96,121 @@ function Home() {
         () => setModalActive((modalActive) => !modalActive),
         [],
       );
+      
+      const settingsPageMarkup = (
+        <Page title="Payment Gateway Settings">
+          <Layout>
+            {skipToContentTarget}
+            <Layout.AnnotatedSection
+              title="Account details"
+              description="Jaded Pixel will use this as your account information."
+            >
+              <Card sectioned>
+                <FormLayout>
+                  <TextField
+                    label="Full name"
+                    value={nameFieldValue}
+                    onChange={handleNameFieldChange}
+                    autoComplete="name"
+                  />
+                  <TextField
+                    type="email"
+                    label="Email"
+                    value={emailFieldValue}
+                    onChange={handleEmailFieldChange}
+                    autoComplete="email"
+                  />
+                </FormLayout>
+              </Card>
+            </Layout.AnnotatedSection>
+          </Layout>
+        </Page>
+      );
+
+      const orderPageMarkup = (
+        <Page title="Orders">
+          <Layout>
+            {skipToContentTarget}
+            <Layout.AnnotatedSection
+              title="Account details"
+              description="Jaded Pixel will use this as your account information."
+            >
+              <Card sectioned>
+                <FormLayout>
+                  <TextField
+                    label="Full name"
+                    value={nameFieldValue}
+                    onChange={handleNameFieldChange}
+                    autoComplete="name"
+                  />
+                  <TextField
+                    type="email"
+                    label="Email"
+                    value={emailFieldValue}
+                    onChange={handleEmailFieldChange}
+                    autoComplete="email"
+                  />
+                </FormLayout>
+              </Card>
+            </Layout.AnnotatedSection>
+          </Layout>
+        </Page>
+      );
+
+      const loadOrderPage = async (id) => {
+        
+        setIsLoading(true);
+        console.log("Loading Payment Gateway page");
+        setIsLoading(false);
+        setCurrentPageMarkup(orderPageMarkup);
+    //     const response = await fetch("https://merrycode.com/node/bohra-calender-client/deactivate-event",
+    //     {
+    //         method: 'POST',
+    //         headers: {
+    //           'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify({
+    //             "event_id": id
+    //           })
+    //       }
+        
+    //     ).then((response) => response.json())
+    //     .then((json) => {
+           
+    //         //setEvents([...events, json]);
+    //         console.log("event deactivated");
+    //         getEventsWithFetch();
+    
+    //   })      
+      }; 
+
+      const loadPaymentGatewayPage = async (id) => {
+        
+        setIsLoading(true);
+        console.log("Loading Payment Gateway page");
+        
+        const response = await fetch("http://localhost/payment-gateways",
+        {
+            // method: 'POST',
+            // headers: {
+            //   'Content-Type': 'application/json'
+            // },
+            // body: JSON.stringify({
+            //     "event_id": id
+            //   })
+          }
+        
+        ).then((response) => response.json())
+        .then((json) => {
+           
+            //setEvents([...events, json]);
+            console.log(json);
+            setIsLoading(false);
+        setCurrentPageMarkup(settingsPageMarkup);
+            //getEventsWithFetch();
+    
+      })      
+      };  
     
       const toastMarkup = toastActive ? (
         <Toast onDismiss={toggleToastActive} content="Changes saved" />
@@ -164,12 +281,12 @@ function Home() {
               {
                 label: 'Order',
                 icon: HomeMajor,
-                onClick: toggleIsLoading,
+                onClick: loadOrderPage,
               },
               {
                 label: 'Payment Gateway',
                 icon: OrdersMajor,
-                onClick: toggleIsLoading,
+                onClick: loadPaymentGatewayPage,
               },
             ]}
             action={{
@@ -187,35 +304,9 @@ function Home() {
         <a id="SkipToContentTarget" ref={skipToContentRef} tabIndex={-1} />
       );
     
-      const actualPageMarkup = (
-        <Page title="Account">
-          <Layout>
-            {skipToContentTarget}
-            <Layout.AnnotatedSection
-              title="Account details"
-              description="Jaded Pixel will use this as your account information."
-            >
-              <Card sectioned>
-                <FormLayout>
-                  <TextField
-                    label="Full name"
-                    value={nameFieldValue}
-                    onChange={handleNameFieldChange}
-                    autoComplete="name"
-                  />
-                  <TextField
-                    type="email"
-                    label="Email"
-                    value={emailFieldValue}
-                    onChange={handleEmailFieldChange}
-                    autoComplete="email"
-                  />
-                </FormLayout>
-              </Card>
-            </Layout.AnnotatedSection>
-          </Layout>
-        </Page>
-      );
+      
+
+     
     
       const loadingPageMarkup = (
         <SkeletonPage>
@@ -232,7 +323,7 @@ function Home() {
         </SkeletonPage>
       );
     
-      const pageMarkup = isLoading ? loadingPageMarkup : actualPageMarkup;
+      //var pageMarkup = isLoading ? loadingPageMarkup : actualPageMarkup;
     
       const modalMarkup = (
         <Modal
@@ -323,7 +414,7 @@ function Home() {
           >
             {contextualSaveBarMarkup}
             {loadingMarkup}
-            {pageMarkup}
+            {currentPageMarkup}
             {toastMarkup}
             {modalMarkup}
           </Frame>
