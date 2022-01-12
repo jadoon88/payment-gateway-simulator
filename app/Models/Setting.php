@@ -5,10 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PaymentGateway extends Model
+class Setting extends Model
 {
-    use HasFactory;
-    protected $fillable = ['title','ratio'];
+    use HasFactory;    
+    protected $fillable = ['key','value'];
     public $timestamps = false;
-
 }

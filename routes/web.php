@@ -19,6 +19,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/payment-gateways', function () {
-    return PaymentGatewayResource::collection(PaymentGateway::all());
-});
+// Route::get('/payment-gateways', function () {
+//     return PaymentGatewayResource::collection(PaymentGateway::all());
+// });

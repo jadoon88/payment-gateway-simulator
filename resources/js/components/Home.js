@@ -4,7 +4,7 @@ import '@shopify/polaris/build/esm/styles.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import enTranslations from '@shopify/polaris/locales/en.json';
 //import {AppProvider, Avatar, ResourceList, TextStyle, Navigation,  Page, Card, Button} from '@shopify/polaris';
-import {AppProvider, ActionList, Avatar, Card, ContextualSaveBar, FormLayout, Frame, Layout, Loading, Modal, Navigation, Page, SkeletonBodyText, SkeletonDisplayText, SkeletonPage, TextContainer, TextField, Toast, TopBar} from '@shopify/polaris';
+import {AppProvider, ButtonGroup, Button, Badge, Stack, ActionList, Avatar, Card, ContextualSaveBar, FormLayout, Frame, Layout, Loading, Modal, Navigation, Page, SkeletonBodyText, SkeletonDisplayText, SkeletonPage, TextContainer, TextField, Toast, TopBar} from '@shopify/polaris';
 import {ArrowLeftMinor, ConversationMinor, HomeMajor, OrdersMajor} from '@shopify/polaris-icons';
   
 
@@ -13,10 +13,22 @@ function Home() {
         emailFieldValue: 'dharma@jadedpixel.com',
         nameFieldValue: 'Allie Cupcakery',
       });
+
+      const [fakeCustomerName, setFakeCustomerName] = useState(); 
+      const [fakeLineItems, setFakeLineItems] = useState(); 
+      const [fakeCurrency, setFakeCurrency] = useState(); 
+      const [fakeShippingAddress, setFakeShippingAddress] = useState(); 
+      const [fakeShippingCity, setFakeShippingCity] = useState(); 
+      const [fakeCountry, setFakeCountry] = useState(); 
+      const [fakePhone, setFakePhone] = useState(); 
+      const [fakeStatus, setFakeStatus] = useState(); 
+      const [fakeTotal, setFakeTotal] = useState(); 
+
       const skipToContentRef = useRef(null);
-    
+      const [paymentGateways, setPaymentGateways ] = useState({});
+      const [addGatewayButtonLayout, setAddGatewayButtonLayout ] = useState(false);
       const [toastActive, setToastActive] = useState(false);
-      const [currentPageMarkup, setCurrentPageMarkup] = useState();
+      const [currentPageMarkup, setCurrentPageMarkup] = useState(orderPageMarkup);
       const [isLoading, setIsLoading] = useState(false);
       const [isDirty, setIsDirty] = useState(false);
       const [searchActive, setSearchActive] = useState(false);
@@ -99,30 +111,55 @@ function Home() {
       
       const settingsPageMarkup = (
         <Page title="Payment Gateway Settings">
+           
           <Layout>
             {skipToContentTarget}
             <Layout.AnnotatedSection
               title="Account details"
               description="Jaded Pixel will use this as your account information."
             >
-              <Card sectioned>
-                <FormLayout>
-                  <TextField
-                    label="Full name"
-                    value={nameFieldValue}
-                    onChange={handleNameFieldChange}
-                    autoComplete="name"
-                  />
-                  <TextField
-                    type="email"
-                    label="Email"
-                    value={emailFieldValue}
-                    onChange={handleEmailFieldChange}
-                    autoComplete="email"
-                  />
-                </FormLayout>
-              </Card>
+                
+
+                {Object.entries(paymentGateways).map(([key, value]) => (
+              
+                    Object.entries(value).map(([key, value]) => (
+                       
+                    <Card key={value.id} sectioned title={value.title} actions={[{content: 'Edit'}]}>
+                    <Stack>
+                        <Stack.Item fill>
+                            <p>Ratio</p>
+                        </Stack.Item>
+                        <Stack.Item>
+                            <Badge>{value.ratio}</Badge>
+                        </Stack.Item>
+                        </Stack>
+                  </Card>
+                        ))
+                        
+                        
+                ))} 
+
+                <Card title="Add New Payment Method">
+                <Card.Section>
+                    <Stack spacing="loose" vertical>
+                    <p>
+                        You can add a new payment method here
+                    </p>
+                    <Stack distribution="trailing">
+                        <ButtonGroup>
+                        <Button onClick={toggleModalActive}>Add Payment Gateway</Button>
+                        </ButtonGroup>
+                    </Stack>
+                    </Stack>
+                </Card.Section>
+                </Card>
+
+
+                    
             </Layout.AnnotatedSection>
+            
+          </Layout>
+          <Layout>
           </Layout>
         </Page>
       );
@@ -132,69 +169,152 @@ function Home() {
           <Layout>
             {skipToContentTarget}
             <Layout.AnnotatedSection
-              title="Account details"
+              title="Fake Order Generator"
               description="Jaded Pixel will use this as your account information."
             >
               <Card sectioned>
                 <FormLayout>
                   <TextField
-                    label="Full name"
+                    label="Customer Name"
+                    value={fakeCustomerName}
+                    onChange={handleNameFieldChange}
+                    autoComplete="name"
+                  />
+                  <TextField
+                    label="Line Items"
+                    value={fakeLineItems}
+                    onChange={handleNameFieldChange}
+                    autoComplete="name"
+                  />
+                  <TextField
+                    label="Currency"
+                    value={fakeCurrency}
+                    onChange={handleNameFieldChange}
+                    autoComplete="name"
+                  />
+                  <TextField
+                    label="Shipping Address"
                     value={nameFieldValue}
                     onChange={handleNameFieldChange}
                     autoComplete="name"
                   />
                   <TextField
-                    type="email"
-                    label="Email"
-                    value={emailFieldValue}
-                    onChange={handleEmailFieldChange}
-                    autoComplete="email"
+                    label="Shipping City"
+                    value={fakeShippingCity}
+                    onChange={handleNameFieldChange}
+                    autoComplete="name"
+                  />
+                  <TextField
+                    label="Shipping Country"
+                    value={fakeCountry}
+                    onChange={handleNameFieldChange}
+                    autoComplete="name"
+                  />
+                  <TextField
+                    label="Shipping Phone"
+                    value={fakePhone}
+                    onChange={handleNameFieldChange}
+                    autoComplete="name"
+                  />
+                  <TextField
+                    label="Status"
+                    value={fakeStatus}
+                    onChange={handleNameFieldChange}
+                    autoComplete="name"
+                  />
+                  <TextField
+                    label="Total"
+                    value={fakeTotal}
+                    onChange={handleNameFieldChange}
+                    autoComplete="name"
                   />
                 </FormLayout>
               </Card>
+              
             </Layout.AnnotatedSection>
           </Layout>
         </Page>
       );
 
+    //   const loadOrderPage = async (id) => {
+        
+    //     setIsLoading(true);
+    //     console.log("Loading Order Page");
+    //     setIsLoading(false);
+    //     setCurrentPageMarkup(orderPageMarkup);
+    // //     const response = await fetch("https://merrycode.com/node/bohra-calender-client/deactivate-event",
+    // //     {
+    // //         method: 'POST',
+    // //         headers: {
+    // //           'Content-Type': 'application/json'
+    // //         },
+    // //         body: JSON.stringify({
+    // //             "event_id": id
+    // //           })
+    // //       }
+        
+    // //     ).then((response) => response.json())
+    // //     .then((json) => {
+           
+    // //         //setEvents([...events, json]);
+    // //         console.log("event deactivated");
+    // //         getEventsWithFetch();
+    
+    // //   })      
+    //   }; 
+
       const loadOrderPage = async (id) => {
         
         setIsLoading(true);
-        console.log("Loading Payment Gateway page");
-        setIsLoading(false);
-        setCurrentPageMarkup(orderPageMarkup);
-    //     const response = await fetch("https://merrycode.com/node/bohra-calender-client/deactivate-event",
-    //     {
-    //         method: 'POST',
-    //         headers: {
-    //           'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify({
-    //             "event_id": id
-    //           })
-    //       }
+        setCurrentPageMarkup(loadingPageMarkup);
+        console.log("Loading Order page");
         
-    //     ).then((response) => response.json())
-    //     .then((json) => {
+        const response = await fetch("http://localhost/api/fake-order",
+        {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            // body: JSON.stringify({
+            //     "event_id": id
+            //   })
+          }
+        
+        ).then((response) => response.json())
+        .then((json) => {
            
-    //         //setEvents([...events, json]);
-    //         console.log("event deactivated");
-    //         getEventsWithFetch();
+            //setEvents([...events, json]);
+            console.log(json.customer_name);
+            setFakeCustomerName(json.customer_name);
+            setFakeLineItems(json.line_items);
+            setFakeCurrency(json.currency);
+            setFakeShippingAddress(json.shipping_address);
+            setFakeShippingCity(json.shipping_city);
+            setFakeCountry(json.shipping_country);
+            setFakePhone(json.shipping_phone);
+            setFakeStatus(json.status);
+            setFakeTotal("100");
+
+            setPaymentGateways(json);
+            setIsLoading(false);
+            setCurrentPageMarkup(orderPageMarkup);
+            //getEventsWithFetch();
     
-    //   })      
-      }; 
+      })      
+      };  
 
       const loadPaymentGatewayPage = async (id) => {
         
         setIsLoading(true);
+        setCurrentPageMarkup(loadingPageMarkup);
         console.log("Loading Payment Gateway page");
         
-        const response = await fetch("http://localhost/payment-gateways",
+        const response = await fetch("http://localhost/api/gateways",
         {
-            // method: 'POST',
-            // headers: {
-            //   'Content-Type': 'application/json'
-            // },
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            },
             // body: JSON.stringify({
             //     "event_id": id
             //   })
@@ -205,6 +325,7 @@ function Home() {
            
             //setEvents([...events, json]);
             console.log(json);
+            setPaymentGateways(json);
             setIsLoading(false);
         setCurrentPageMarkup(settingsPageMarkup);
             //getEventsWithFetch();
@@ -279,12 +400,12 @@ function Home() {
             title="Simulator"
             items={[
               {
-                label: 'Order',
+                label: 'Simulate Order',
                 icon: HomeMajor,
                 onClick: loadOrderPage,
               },
               {
-                label: 'Payment Gateway',
+                label: 'Payment Gateways',
                 icon: OrdersMajor,
                 onClick: loadPaymentGatewayPage,
               },
@@ -303,11 +424,6 @@ function Home() {
       const skipToContentTarget = (
         <a id="SkipToContentTarget" ref={skipToContentRef} tabIndex={-1} />
       );
-    
-      
-
-     
-    
       const loadingPageMarkup = (
         <SkeletonPage>
           <Layout>
@@ -329,27 +445,25 @@ function Home() {
         <Modal
           open={modalActive}
           onClose={toggleModalActive}
-          title="Contact support"
-          primaryAction={{
-            content: 'Send',
-            onAction: toggleModalActive,
-          }}
+          title="Add Payment Gateway"
         >
           <Modal.Section>
             <FormLayout>
               <TextField
-                label="Subject"
-                value={supportSubject}
-                onChange={handleSubjectChange}
-                autoComplete="off"
+              label="Payment Gateway Title"
+              value={supportMessage}
+              onChange={handleMessageChange}
+              autoComplete="off"
+              type="text"
               />
               <TextField
-                label="Message"
-                value={supportMessage}
-                onChange={handleMessageChange}
-                autoComplete="off"
-                multiline
+                 label="Ratio"
+                 value={supportMessage}
+                 onChange={handleMessageChange}
+                 autoComplete="off"
+                 type="text"
               />
+              <Button primary loading={addGatewayButtonLayout}>Add Gateway</Button>
             </FormLayout>
           </Modal.Section>
         </Modal>
