@@ -18,6 +18,13 @@ class Settings extends Migration
             $table->text('key');
             $table->text('value');
         });
+
+        DB::table('settings')->insert(
+            array(
+                [
+                    'key' => 'ratios_sorted_by_priority','value' => '{"1":0}'
+                ],
+            ));
     }
 
     /**

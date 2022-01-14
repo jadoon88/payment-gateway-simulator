@@ -18,6 +18,14 @@ class CreatePaymentMethodsTable extends Migration
             $table->string('title');
             $table->integer('ratio')->default(1);
         });
+
+        DB::table('payment_gateways')->insert(
+            array(
+                [
+                    'title' => 'Pay By Card','ratio' => '2',
+                ],
+            ));
+    
     }
 
     /**

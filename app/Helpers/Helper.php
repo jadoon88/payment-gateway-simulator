@@ -102,6 +102,22 @@ class Helper
         
     }
 
+    public static function create_or_update_priority_ratio_setting_from_gateways()
+    {
+        $ratios = Helper::get_gateway_ratios_array();
+        $ratios_sorted_by_priority = $ratios;
+        arsort($ratios_sorted_by_priority);
+        Setting::updateOrCreate(
+            [
+                'key' =>"ratios_sorted_by_priority"
+            ],
+            [
+            'key' =>"ratios_sorted_by_priority",
+            'value' =>json_encode($ratios_sorted_by_priority),
+            ]
+        );
+    }
+
     public static function get_gateway_ratios_array()
     {
         $payment_methods_raw= PaymentGateway::all()->toArray();

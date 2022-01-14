@@ -30,17 +30,7 @@ class PaymentGatewayController extends Controller
         $validator = Validator::make($request->all(), [
             
             'title' =>'required',
-            'customer_name' =>'required',
-            'shipping_address' =>'required',
-            'shipping_phone' =>'required',
-            'shipping_city' =>'required',
-            'shipping_country' =>'required',
-            'line_items' =>'required',
-            'total' =>'required',
-            'currency' =>'required',
-            'status' =>'required',
-            'total' =>'required',
-            'payment_gateway' =>'required',
+            'ratio' =>'required',
         ]);
 
         if ($validator->fails()) {
@@ -53,17 +43,7 @@ class PaymentGatewayController extends Controller
 
         PaymentGateway::create([
             'title' =>$request->title,
-            'customer_name' =>$request->customer_name,
-            'shipping_address' =>$request->shipping_address,
-            'shipping_phone' =>$request->shipping_phone,
-            'shipping_city' =>$request->shipping_city,
-            'shipping_country' =>$request->shipping_country,
-            'line_items' =>$request->line_items,
-            'total' =>$request->total,
-            'currency' =>$request->currency,
-            'status' =>$request->status,
-            'total' =>$request->total,
-            'payment_gateway' =>intVal($request->payment_gateway),
+            'ratio' =>intVal($request->ratio),
             ]
         );
 
@@ -117,7 +97,7 @@ class PaymentGatewayController extends Controller
      */
     public function destroy($id)
     {
-        Order::destroy($id);
+        PaymentGateway::destroy($id);
         
         return response([
             'response' => [

@@ -13,8 +13,7 @@ class OrderFactory extends Factory
      */
     public function definition()
     {
-        $next_payment_method_id=intVal(Helper::get_next_payment_method_id());
-        echo "NEXT ID:".$next_payment_method_id;
+        $next_payment_method_id=intVal(Helper::get_next_payment_method_id()); 
         return [
             'customer_name' => $this->faker->name(),
             'shipping_address' => $this->faker->address(),
