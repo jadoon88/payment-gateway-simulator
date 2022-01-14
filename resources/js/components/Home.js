@@ -1,9 +1,6 @@
 import React, {useEffect, useCallback, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
 import '@shopify/polaris/build/esm/styles.css';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import enTranslations from '@shopify/polaris/locales/en.json';
-//import {AppProvider, Avatar, ResourceList, TextStyle, Navigation,  Page, Card, Button} from '@shopify/polaris';
 import {AppProvider, Image, DataTable, Heading, ButtonGroup, Button, Badge, Stack, ActionList, Avatar, Card, ContextualSaveBar, FormLayout, Frame, Layout, Loading, Modal, Navigation, Page, SkeletonBodyText, SkeletonDisplayText, SkeletonPage, TextContainer, TextField, Toast, TopBar} from '@shopify/polaris';
 import {ArrowLeftMinor, ConversationMinor, HomeMajor, OrdersMajor} from '@shopify/polaris-icons';
   

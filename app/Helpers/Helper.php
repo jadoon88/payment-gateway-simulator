@@ -90,7 +90,6 @@ class Helper
 
         if($should_return)
         {
-            echo "Returning value:".intVal($recommended_payment_gateway_id);
             return intVal($recommended_payment_gateway_id);
         }
         else
